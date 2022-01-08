@@ -3,11 +3,11 @@
 cmake_minimum_required(VERSION 3.15)
 
 project(
-    VscodeCmakeHello
+    VscodeCmakeBattleship
     VERSION 0.1
-    DESCRIPTION "Small CMake example built with VSCode")
+    DESCRIPTION "Battleship game (learning project)")
 
-add_subdirectory(hello)   # look in hello subdirectory for CMakeLists.txt to process
+add_subdirectory(battleship)   # look in battleship subdirectory for CMakeLists.txt to process
 add_subdirectory(apps)    # look in apps subdirectory for CMakeLists.txt to process
 if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
     add_subdirectory(tests)

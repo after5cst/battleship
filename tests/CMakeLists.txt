@@ -45,4 +45,4 @@ endmacro()
 
 message("${PROJECT_DIR}")
 
-package_add_test_with_libraries(HelloTests hellotests.cpp hello "${PROJECT_DIR}")
+package_add_test_with_libraries(BattleshipTests battleship_tests.cpp battleship "${PROJECT_DIR}")
