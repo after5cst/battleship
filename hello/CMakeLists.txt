@@ -8,7 +8,6 @@ project(hello)
 # set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS True)
 
 add_library(hello 
-    src/hello.cpp 
     src/get_config_path.cpp
     )
 
