@@ -1,21 +1,52 @@
 #include "hello.h"
-#include "cfgpath.h"
 
-static const auto INITIAL_BUFFER_SIZE = 512;
-
+static std::filesystem::path get_system_data_path();
 
 std::filesystem::path get_config_path()
 {
-    auto buffer = std::make_unique<char>(INITIAL_BUFFER_SIZE);
-    *buffer = 0;
-    for (auto size = INITIAL_BUFFER_SIZE; *buffer == 0; size *= 2)
+    auto path = get_system_data_path() / "battleship";
+    if (!(std::filesystem::is_directory(path) || 
+          std::filesystem::create_directory(path)))
     {
-        get_user_config_folder(buffer.get(), sizeof(buffer) - 1, "battleship");
+        throw std::runtime_error("Could not find or create config path");
     }
-    if (!std::filesystem::exists(buffer.get()) &&
-        !std::filesystem::create_directories(buffer.get()))
-    {
-            throw std::runtime_error("Could not find or create config path");
-    }
-    return std::filesystem::path(buffer.get());
+    return path;
 }
+
+#ifdef _MSC_VER
+// Modified from https://stackoverflow.com/a/62314965/2525388
+#include <windows.h>
+#include <shlobj_core.h>
+
+static std::filesystem::path get_system_data_path()
+{
+    std::filesystem::path path;
+    PWSTR path_tmp;
+
+    /* Attempt to get user's AppData folder
+     *
+     * Microsoft Docs:
+     * https://docs.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderpath
+     * https://docs.microsoft.com/en-us/windows/win32/shell/knownfolderid
+     */
+    auto get_folder_path_ret = SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &path_tmp);
+
+    /* Error check */
+    if (get_folder_path_ret != S_OK) {
+        CoTaskMemFree(path_tmp);
+        throw std::runtime_error("Could not find AppData folder");
+    }
+
+    /* Convert the Windows path type to a C++ path */
+    path = path_tmp;
+
+    /* Free memory :) */
+    CoTaskMemFree(path_tmp);
+
+    return path;
+}
+#elif defined __linux__
+    #error "TODO: implement get_system_data_path() on linux"
+#else
+    #error "TODO: implement get_system_data_path() on unknown OS"
+#endif
