@@ -7,11 +7,16 @@ project(hello)
 # set(BUILD_SHARED_LIBS ON)
 # set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS True)
 
-add_library(hello src/hello.cpp)
+add_library(hello 
+    src/hello.cpp 
+    src/get_config_path.cpp
+    )
 
 # PUBLIC needed to make both hello.h and hello library available elsewhere in project
 target_include_directories(${PROJECT_NAME}
-    PUBLIC ${PROJECT_SOURCE_DIR}/include)
+    PUBLIC ${PROJECT_SOURCE_DIR}/include
+    PRIVATE ${PROJECT_SOURCE_DIR}/extern/cfgpath
+    )
 
 # Tell compiler to use C++20 features. The code doesn't actually use any of them.
 target_compile_features(hello PUBLIC cxx_std_20)
