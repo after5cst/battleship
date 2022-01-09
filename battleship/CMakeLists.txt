@@ -8,7 +8,9 @@ project(battleship)
 # set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS True)
 
 add_library(battleship 
-    src/get_config_path.cpp
+    src/config.cpp
+    src/heat.cpp
+    src/grid.cpp
     )
 
 # PUBLIC needed to make both battleship.h and battleship library available elsewhere in project
