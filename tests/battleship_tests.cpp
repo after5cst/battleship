@@ -75,11 +75,3 @@ TEST(GridTests, testCanSaveAndLoadGrid) {
         }
     }
 }
-
-TEST(GridTests, testCanHeatSingleShip) {
-    clear_config();
-    std::queue<int> targets;
-    targets.push(10); // push a ship of size 10.
-    auto heat = get_heat(targets);
-    // TODO : FINISH
-}

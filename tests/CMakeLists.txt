@@ -45,4 +45,8 @@ endmacro()
 
 message("${PROJECT_DIR}")
 
-package_add_test_with_libraries(BattleshipTests battleship_tests.cpp battleship "${PROJECT_DIR}")
+set( test_files 
+  battleship_tests.cpp
+  coordinate_tests.cpp
+)
+package_add_test_with_libraries(BattleshipTests "${test_files}" battleship "${PROJECT_DIR}")
