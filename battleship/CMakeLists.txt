@@ -9,8 +9,8 @@ project(battleship)
 
 add_library(battleship 
     src/config.cpp
-    src/heat.cpp
     src/grid.cpp
+    src/ship.cpp
     )
 
 # PUBLIC needed to make both battleship.h and battleship library available elsewhere in project

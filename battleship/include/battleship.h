@@ -19,7 +19,3 @@ grid_t load_ship_grid();
 
 void save_aiming_grid(const grid_t& grid);
 void save_ship_grid(const grid_t& grid);
-
-heat_t get_heat( std::queue<int> targets);
-
-bool place_horizontal_ship(char ship, grid_t &grid, int row, int col, int len);

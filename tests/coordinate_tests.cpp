@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "coordinate.h"
+#include "ship.h"
 
 TEST(CoordinateTests, test_coords_default_to_invalid) {
     Coordinate coord{GRID_SIZE, GRID_SIZE};
