@@ -2,7 +2,7 @@
 
 static std::filesystem::path get_system_data_path();
 
-void clear_config()
+void clear_config(uint8_t grid_size)
 {
     auto path = get_config_path();
     std::filesystem::remove_all(path);

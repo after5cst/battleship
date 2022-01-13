@@ -3,20 +3,9 @@
 #include <assert.h>
 #include <stdint.h>
 #include <limits>
+#include <vector>
 
-uint8_t calculate_ship_length(const char id)
-{
-    switch (id)
-    {
-        case 'A':  return 5;
-        case 'B':  return 4;
-        case 'C':  return 3;
-        case 'S':  return 3;
-        case 'D':  return 2;
-    }
-    assert(false);
-    return 1;
-}
+uint8_t calculate_ship_length(const char id);  // forward declaration.
 
 struct Ship 
 {
@@ -98,3 +87,41 @@ private:
             ;
     }
 };
+
+inline uint8_t calculate_ship_length(const char id)
+{
+    switch (id)
+    {
+        case 'A':  return 5;
+        case 'B':  return 4;
+        case 'C':  return 3;
+        case 'S':  return 3;
+        case 'D':  return 2;
+    }
+    assert(false);
+    return 1;
+}
+
+template <int SIZE=GRID_SIZE>
+std::vector<Ship> ship_possibile_locations(char id/*,TODO: filtering*/)
+{
+    std::vector<Ship> locations;
+    locations.reserve(180); // Big enough for all destroyer locations.
+    for (uint8_t row=0; row < SIZE; ++row)
+    {
+        for (uint8_t col=0; col < SIZE; ++col)
+        {
+            auto right = Ship::create(id, Coordinate{row, col}, Direction::RIGHT);
+            if (right.se.col < SIZE) // Validity checks start with "still on the board"
+            {
+                locations.push_back(std::move(right));
+            }
+            auto down = Ship::create(id, Coordinate{row, col}, Direction::DOWN);
+            if (right.se.col < SIZE) // Validity checks start with "still on the board"
+            {
+                locations.push_back(std::move(down));
+            }
+        }
+    }
+    return locations;
+}

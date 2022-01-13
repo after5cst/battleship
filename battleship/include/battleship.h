@@ -4,10 +4,13 @@
 #include <filesystem>
 #include <queue>
 
-std::filesystem::path get_config_path();
-void clear_config();
 
 #define GRID_SIZE 10
+
+
+std::filesystem::path get_config_path();
+void clear_config( uint8_t new_grid_size=GRID_SIZE);
+
 typedef std::array<char, GRID_SIZE> grid_row_t;
 typedef std::array<grid_row_t, GRID_SIZE> grid_t;
 

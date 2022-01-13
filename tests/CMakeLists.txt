@@ -47,6 +47,7 @@ message("${PROJECT_DIR}")
 
 set( test_files 
   battleship_tests.cpp
+  configurations_tests.cpp
   coordinate_tests.cpp
 )
 package_add_test_with_libraries(BattleshipTests "${test_files}" battleship "${PROJECT_DIR}")
