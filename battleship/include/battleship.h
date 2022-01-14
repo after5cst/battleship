@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <assert.h>
 #include <memory>
 #include <string>
@@ -8,14 +9,20 @@
 
 
 
+
+#define GRID_DIM 10
+
 struct Coordinate {
     const uint8_t row;
     const uint8_t col;
+
+    operator size_t() const { return row*GRID_DIM + col; }
 };
 
 enum class Direction{ RIGHT, DOWN };
 
 enum class Type : char {
+    NOTHING = ' ',
     MISS = '-',
     HIT = '*',
     CARRIER = 'A',
@@ -57,33 +64,41 @@ enum class Type : char {
 //     }
 // };
 
+struct PegBoard : public std::array<Type, GRID_DIM * GRID_DIM>
+{
+    static PegBoard create()
+    {
+        PegBoard peg_board;
+        peg_board.fill(Type::NOTHING);
+        return peg_board;
+    }
+};
 
-template<typename T>
+template<typename T, unsigned SIZE=GRID_DIM>
 struct GridTemplate final
 {
-    unsigned int row_size;
     T data[];
 
     template <typename U>
     void set(Coordinate coord, U value)
     {
-        if (coord.row >= row_size || coord.col >= row_size)
+        if (coord.row >= GRID_DIM || coord.col >= GRID_DIM)
         {
             assert(false);
             return;
         }
-        data[coord.row * row_size + coord.col] = static_cast<T>(value);
+        data[coord.row * GRID_DIM + coord.col] = static_cast<T>(value);
     }
 
     template <typename U = T>
     U get(Coordinate coord) const
     {
-        if (coord.row >= row_size || coord.col >= row_size)
+        if (coord.row >= GRID_DIM || coord.col >= GRID_DIM)
         {
             assert(false);
             throw std::runtime_error("Out of bounds");
         }
-        return static_cast<U>(data[coord.row * row_size + coord.col]);
+        return static_cast<U>(data[coord.row * GRID_DIM + coord.col]);
     }
 
     // Lifespan management below.  Other than create() nothing of interest.
@@ -112,19 +127,16 @@ struct GridTemplate final
     }
 };
 
-typedef GridTemplate<Type> PegBoard;
 typedef GridTemplate<uint64_t> CountGrid;
-
-#define GRID_SIZE 10
 
 
 std::filesystem::path get_config_path();
-void clear_config( uint8_t row_size=GRID_SIZE);
+void clear_config();
 
-PegBoard::ptr_t load_aiming_grid();
-PegBoard::ptr_t load_ship_grid();
+PegBoard load_aiming_grid();
+PegBoard load_ship_grid();
 
-void save_aiming_grid(PegBoard* const grid);
-void save_ship_grid(PegBoard* const grid);
+void save_aiming_grid(const PegBoard& grid);
+void save_ship_grid(const PegBoard& grid);
 
 std::vector<Coordinate> get_misses(const PegBoard& grid);

@@ -36,23 +36,29 @@ TEST(ConfigTests, testCanResetGame) {
 
 }
 
-TEST(GridTests, testGridInitializesToZeros) {
-    auto grid = PegBoard::create(2);
-    char zeros[5] = {0};
-    ASSERT_EQ(0, memcmp(reinterpret_cast<const char*>(grid->data), zeros, 5));
+TEST(GridTests, testGridInitializesToNothing) {
+    auto grid = PegBoard::create();
+    for (auto i = 0U; i < GRID_DIM * GRID_DIM; ++i)
+    {
+        ASSERT_EQ(grid[i], Type::NOTHING);
+    }
 }
 
 TEST(GridTests, testCanSaveAndLoadGrid) {
-    clear_config(2);
+    clear_config();
     auto grid = load_aiming_grid();
     // Prove a new grid is entirely blank.
-    auto empty = std::string("    ");
-    ASSERT_EQ(std::string(reinterpret_cast<const char*>(grid->data)), empty);
+    for (auto i = 0U; i < GRID_DIM * GRID_DIM; ++i)
+    {
+        ASSERT_EQ(grid[i], Type::NOTHING);
+    }
 
     // Modify it, save, reload, and verify changes are there.
-    grid->data[2] = Type::CARRIER;
-    save_aiming_grid(grid.get());
+    grid[2] = Type::CARRIER;
+    save_aiming_grid(grid);
     grid = load_aiming_grid();
-    auto not_empty = std::string("  A ");
-    ASSERT_EQ(std::string(reinterpret_cast<const char*>(grid->data)), not_empty);
+    for (auto i = 0U; i < GRID_DIM * GRID_DIM; ++i)
+    {
+        ASSERT_EQ(grid[i], (i == 2 ? Type::CARRIER : Type::NOTHING));
+    }
 }

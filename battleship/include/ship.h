@@ -101,9 +101,10 @@ inline uint8_t calculate_ship_length(Type id)
     return 1;
 }
 
-template <int SIZE=GRID_SIZE>
+template <int SIZE=GRID_DIM>
 std::vector<Ship> ship_possibile_locations(Type id/*,TODO: filtering*/)
 {
+    static_assert(SIZE <= GRID_DIM, "Template parameter too large");
     std::vector<Ship> locations;
     locations.reserve(180); // Big enough for all destroyer locations.
     for (uint8_t row=0; row < SIZE; ++row)
