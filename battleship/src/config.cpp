@@ -2,14 +2,15 @@
 
 static std::filesystem::path get_system_data_path();
 
-void clear_config(uint8_t grid_size)
+void clear_config(uint8_t row_size)
 {
     auto path = get_config_path();
     std::filesystem::remove_all(path);
     std::filesystem::create_directories(path);
-    auto empty_grid = grid_t{};
-    save_aiming_grid(empty_grid);
-    save_ship_grid(empty_grid);
+
+    auto empty_grid = Grid::create(row_size);
+    save_aiming_grid(empty_grid.get());
+    save_ship_grid(empty_grid.get());
 }
 
 std::filesystem::path get_config_path()

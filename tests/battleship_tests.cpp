@@ -36,42 +36,23 @@ TEST(ConfigTests, testCanResetGame) {
 
 }
 
-TEST(GridTests, testGridInitializesToZero) {
-    auto grid = grid_t{};
-    for (const auto& row : grid) {
-        for (const auto& pos: row) {
-            ASSERT_EQ(pos, 0);
-        }
-    }
-    auto heat = heat_t{};
-    for (const auto& row : heat) {
-        for (const auto& pos: row) {
-            ASSERT_EQ(pos, 0);
-        }
-    }
+TEST(GridTests, testGridInitializesToSpace) {
+    auto grid = Grid::create(2);
+    auto empty = std::string("    ");
+    ASSERT_EQ(std::string(grid->data), empty);
 }
 
 TEST(GridTests, testCanSaveAndLoadGrid) {
-    clear_config();
+    clear_config(2);
     auto grid = load_aiming_grid();
     // Prove a new grid is entirely blank.
-    for (const auto& row : grid) {
-        for (const auto& pos: row) {
-            ASSERT_EQ(pos, ' ');
-        }
-    }
+    auto empty = std::string("    ");
+    ASSERT_EQ(std::string(grid->data), empty);
+
     // Modify it, save, reload, and verify changes are there.
-    for (auto i = 0; i < GRID_SIZE; ++i)
-    {
-        grid[i][i] = 'A';
-    }
-    save_aiming_grid(grid);
+    grid->data[2] = 'A';
+    save_aiming_grid(grid.get());
     grid = load_aiming_grid();
-    for (auto i = 0; i < GRID_SIZE; ++i)
-    {
-        for (auto j = 0; j < GRID_SIZE; ++j)
-        {
-            ASSERT_EQ(grid[i][j], (i == j ? 'A' : ' '));
-        }
-    }
+    auto not_empty = std::string("  A ");
+    ASSERT_EQ(std::string(grid->data), not_empty);
 }

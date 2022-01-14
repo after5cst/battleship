@@ -8,8 +8,12 @@
 // Ship SUNK (if known)
 
 TEST(ConfigurationsTests, test_ship_possibile_locations) {
-    auto locations = ship_possibile_locations<2>('D');
+
+    auto grid = Grid::create(2);
+    auto locations = ship_possibile_locations<2>(Type::DESTROYER);
     ASSERT_EQ(locations.size(), 4);
-    locations = ship_possibile_locations<3>('D');
+
+    grid = Grid::create(3);
+    locations = ship_possibile_locations<3>(Type::DESTROYER);
     ASSERT_EQ(locations.size(), 12);
 }

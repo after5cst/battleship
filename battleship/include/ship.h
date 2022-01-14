@@ -5,19 +5,18 @@
 #include <limits>
 #include <vector>
 
-uint8_t calculate_ship_length(const char id);  // forward declaration.
+uint8_t calculate_ship_length(Type id);  // forward declaration.
 
 struct Ship 
 {
-    const char id;
+    Type id;
     const uint8_t length;
     const Coordinate nw;
     const Coordinate se;
     const Direction direction;
 
-    static Ship create(char ship_id, Coordinate anchor, Direction right_or_down)
+    static Ship create(Type ship_id, Coordinate anchor, Direction right_or_down)
     {
-        ship_id = toupper(ship_id);
         auto length = calculate_ship_length(ship_id);
         auto se = calculate_se(anchor, length, right_or_down);
         return Ship{ship_id, length, anchor, se, right_or_down};
@@ -88,22 +87,22 @@ private:
     }
 };
 
-inline uint8_t calculate_ship_length(const char id)
+inline uint8_t calculate_ship_length(Type id)
 {
     switch (id)
     {
-        case 'A':  return 5;
-        case 'B':  return 4;
-        case 'C':  return 3;
-        case 'S':  return 3;
-        case 'D':  return 2;
+        case Type::CARRIER:  return 5;
+        case Type::BATTLESHIP:  return 4;
+        case Type::CRUISER:  return 3;
+        case Type::SUB:  return 3;
+        case Type::DESTROYER:  return 2;
     }
     assert(false);
     return 1;
 }
 
 template <int SIZE=GRID_SIZE>
-std::vector<Ship> ship_possibile_locations(char id/*,TODO: filtering*/)
+std::vector<Ship> ship_possibile_locations(Type id/*,TODO: filtering*/)
 {
     std::vector<Ship> locations;
     locations.reserve(180); // Big enough for all destroyer locations.
