@@ -9,6 +9,7 @@ project(battleship)
 
 add_library(battleship 
     src/config.cpp
+    src/functions.cpp
     src/grid.cpp
     src/ship.cpp
     )

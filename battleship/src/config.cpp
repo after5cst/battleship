@@ -8,7 +8,7 @@ void clear_config(uint8_t row_size)
     std::filesystem::remove_all(path);
     std::filesystem::create_directories(path);
 
-    auto empty_grid = Grid::create(row_size);
+    auto empty_grid = PegBoard::create(row_size);
     save_aiming_grid(empty_grid.get());
     save_ship_grid(empty_grid.get());
 }

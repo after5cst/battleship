@@ -1,5 +1,5 @@
 #pragma once
-#include "coordinate.h"
+#include "battleship.h"
 #include <assert.h>
 #include <stdint.h>
 #include <limits>
