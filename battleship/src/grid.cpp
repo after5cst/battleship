@@ -1,6 +1,35 @@
 #include "battleship.h"
 #include <assert.h>
 #include <fstream>
+#include <unordered_map>
+
+
+static const std::unordered_map<Type, char> MAP_CELL_TYPE_TO_CHAR = {
+    { Type::NOTHING, ' ' },
+    { Type::MISS, '-' },
+    { Type::HIT, '*' },
+    { Type::CARRIER, 'A' },
+    { Type::BATTLESHIP, 'B' },
+    { Type::CRUISER, 'C' },
+    { Type::DESTROYER, 'D' },
+    { Type::SUB, 'S' },
+    { Type::SUNK, '!' },
+    { Type::MAX, '%' },
+};
+
+
+static const std::unordered_map<char, Type> MAP_CHAR_TO_CELL_TYPE = {
+    { ' ', Type::NOTHING },
+    { '-', Type::MISS },
+    { '*', Type::HIT },
+    { 'A', Type::CARRIER },
+    { 'B', Type::BATTLESHIP },
+    { 'C', Type::CRUISER },
+    { 'D', Type::DESTROYER },
+    { 'S', Type::SUB },
+    { '!', Type::SUNK },
+    { '?', Type::MAX },
+};
 
 static void save(const TypeGrid& grid, std::string name)
 {
@@ -11,8 +40,16 @@ static void save(const TypeGrid& grid, std::string name)
     {
         for (uint8_t col = 0; col < GRID_DIM; ++col)
         {
-            auto ch = static_cast<char>(grid[Coordinate(row, col).pos]);
-            fp << (ch ? ch : ' '); // convert '\0' to ' '.
+            auto iter = MAP_CELL_TYPE_TO_CHAR.find(grid[Coordinate(row, col).pos]);
+            if (iter != MAP_CELL_TYPE_TO_CHAR.end())
+            {
+                fp << iter->second;
+            }
+            else
+            {
+                assert(false);
+                fp << '?';
+            }
         }
         fp << std::endl;
     }
@@ -36,13 +73,10 @@ static TypeGrid load(std::string name)
 
     for (const auto& ch: source_buffer)
     {
-        switch (ch)
+        auto iter = MAP_CHAR_TO_CELL_TYPE.find(ch);
+        if (iter != MAP_CHAR_TO_CELL_TYPE.end())
         {
-            case '\r':
-            case '\n':
-                break;
-            default:
-                grid[offset++] = static_cast<Type>(ch);
+            grid[offset++] = iter->second;
         }
     }
     assert(offset == 100);

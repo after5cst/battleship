@@ -52,16 +52,17 @@ struct Coordinate {
 
 enum class Direction{ RIGHT, DOWN };
 
-enum class Type : char {
-    NOTHING = ' ',
-    MISS = '-',
-    HIT = '*',
-    CARRIER = 'A',
-    BATTLESHIP = 'B',
-    CRUISER = 'C',
-    DESTROYER = 'D',
-    SUB = 'S',
-    SUNK = 'K'
+enum class Type{
+    NOTHING = 0,
+    MISS = 1,
+    HIT = 2,
+    CARRIER = 3,
+    BATTLESHIP = 4,
+    CRUISER = 5,
+    DESTROYER = 6,
+    SUB = 7,
+    SUNK = 8,
+    MAX = 9
 };
 
 struct TypeGrid : public std::array<Type, GRID_AREA>
