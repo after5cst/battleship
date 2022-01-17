@@ -4,31 +4,31 @@
 #include <unordered_map>
 
 
-static const std::unordered_map<Type, char> MAP_CELL_TYPE_TO_CHAR = {
-    { Type::NOTHING, ' ' },
-    { Type::MISS, '-' },
-    { Type::HIT, '*' },
-    { Type::CARRIER, 'A' },
-    { Type::BATTLESHIP, 'B' },
-    { Type::CRUISER, 'C' },
-    { Type::DESTROYER, 'D' },
-    { Type::SUB, 'S' },
-    { Type::SUNK, '!' },
-    { Type::MAX, '%' },
+static const std::unordered_map<CellType, char> MAP_CELL_TYPE_TO_CHAR = {
+    { CellType::NOTHING, ' ' },
+    { CellType::MISS, '-' },
+    { CellType::HIT, '*' },
+    { CellType::CARRIER, 'A' },
+    { CellType::BATTLESHIP, 'B' },
+    { CellType::CRUISER, 'C' },
+    { CellType::DESTROYER, 'D' },
+    { CellType::SUB, 'S' },
+    { CellType::SUNK, '!' },
+    { CellType::MAX, '%' },
 };
 
 
-static const std::unordered_map<char, Type> MAP_CHAR_TO_CELL_TYPE = {
-    { ' ', Type::NOTHING },
-    { '-', Type::MISS },
-    { '*', Type::HIT },
-    { 'A', Type::CARRIER },
-    { 'B', Type::BATTLESHIP },
-    { 'C', Type::CRUISER },
-    { 'D', Type::DESTROYER },
-    { 'S', Type::SUB },
-    { '!', Type::SUNK },
-    { '?', Type::MAX },
+static const std::unordered_map<char, CellType> MAP_CHAR_TO_CELL_TYPE = {
+    { ' ', CellType::NOTHING },
+    { '-', CellType::MISS },
+    { '*', CellType::HIT },
+    { 'A', CellType::CARRIER },
+    { 'B', CellType::BATTLESHIP },
+    { 'C', CellType::CRUISER },
+    { 'D', CellType::DESTROYER },
+    { 'S', CellType::SUB },
+    { '!', CellType::SUNK },
+    { '?', CellType::MAX },
 };
 
 static void save(const TypeGrid& grid, std::string name)

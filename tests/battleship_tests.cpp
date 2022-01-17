@@ -40,7 +40,7 @@ TEST(GridTests, testGridInitializesToNothing) {
     auto grid = TypeGrid::create();
     for (auto i = 0U; i < GRID_DIM * GRID_DIM; ++i)
     {
-        ASSERT_EQ(grid[i], Type::NOTHING);
+        ASSERT_EQ(grid[i], CellType::NOTHING);
     }
 }
 
@@ -50,15 +50,15 @@ TEST(GridTests, testCanSaveAndLoadGrid) {
     // Prove a new grid is entirely blank.
     for (auto i = 0U; i < GRID_DIM * GRID_DIM; ++i)
     {
-        ASSERT_EQ(grid[i], Type::NOTHING);
+        ASSERT_EQ(grid[i], CellType::NOTHING);
     }
 
     // Modify it, save, reload, and verify changes are there.
-    grid[2] = Type::CARRIER;
+    grid[2] = CellType::CARRIER;
     save_aiming_grid(grid);
     grid = load_aiming_grid();
     for (auto i = 0U; i < GRID_DIM * GRID_DIM; ++i)
     {
-        ASSERT_EQ(grid[i], (i == 2 ? Type::CARRIER : Type::NOTHING));
+        ASSERT_EQ(grid[i], (i == 2 ? CellType::CARRIER : CellType::NOTHING));
     }
 }

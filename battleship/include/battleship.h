@@ -52,7 +52,7 @@ struct Coordinate {
 
 enum class Direction{ RIGHT, DOWN };
 
-enum class Type{
+enum CellType{
     NOTHING = 0,
     MISS = 1,
     HIT = 2,
@@ -65,12 +65,12 @@ enum class Type{
     MAX = 9
 };
 
-struct TypeGrid : public std::array<Type, GRID_AREA>
+struct TypeGrid : public std::array<CellType, GRID_AREA>
 {
     static TypeGrid create()
     {
         TypeGrid peg_board;
-        peg_board.fill(Type::NOTHING);
+        peg_board.fill(CellType::NOTHING);
         return peg_board;
     }
 };
@@ -88,8 +88,7 @@ typedef std::array<int8_t, GRID_AREA> Positions;
 
 struct GridInfo
 {
-    Positions misses;
-    Positions::iterator iter;
+    Positions positions[CellType::MAX];
 };
 
 GridInfo build_grid_info(const TypeGrid& grid);

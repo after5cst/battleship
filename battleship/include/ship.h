@@ -5,17 +5,17 @@
 #include <limits>
 #include <vector>
 
-uint8_t calculate_ship_length(Type id);  // forward declaration.
+uint8_t calculate_ship_length(CellType id);  // forward declaration.
 
 struct Ship 
 {
-    Type id;
+    CellType id;
     const uint8_t length;
     const Coordinate nw;
     const Coordinate se;
     const Direction direction;
 
-    static Ship create(Type ship_id, Coordinate anchor, Direction right_or_down)
+    static Ship create(CellType ship_id, Coordinate anchor, Direction right_or_down)
     {
         auto length = calculate_ship_length(ship_id);
         auto se = calculate_se(anchor, length, right_or_down);
@@ -70,7 +70,7 @@ struct Ship
         );
     }
 
-    bool overlaps_any(const Positions &positions)
+    bool overlaps_any(const Positions &positions) const
     {
         for (auto& pos : positions)
         {
@@ -86,7 +86,7 @@ struct Ship
         return false;
     }
 
-    bool overlaps_all(const Positions &positions)
+    bool overlaps_all(const Positions &positions) const
     {
         for (auto& pos : positions)
         {
@@ -112,22 +112,49 @@ private:
     }
 };
 
-inline uint8_t calculate_ship_length(Type id)
+inline uint8_t calculate_ship_length(CellType id)
 {
     switch (id)
     {
-        case Type::CARRIER:  return 5;
-        case Type::BATTLESHIP:  return 4;
-        case Type::CRUISER:  return 3;
-        case Type::SUB:  return 3;
-        case Type::DESTROYER:  return 2;
+        case CellType::CARRIER:  return 5;
+        case CellType::BATTLESHIP:  return 4;
+        case CellType::CRUISER:  return 3;
+        case CellType::SUB:  return 3;
+        case CellType::DESTROYER:  return 2;
     }
     assert(false);
     return 1;
 }
 
+
+inline bool can_place_ship(const Ship& ship, const GridInfo& info)
+{
+    if (ship.overlaps_any(info.positions[CellType::MISS]))
+    {
+        return false; // Known "miss" on at least one of the ship's cells.
+    }
+    for (int i = CellType::CARRIER; i <= CellType::SUB; ++i)
+    {
+        if (ship.id == i)
+        {
+            if (!ship.overlaps_all(info.positions[ship.id]))
+            {
+                return false; // A known ship coordinate is out of bounds.
+            }
+        }
+        else
+        {
+            if (ship.overlaps_any(info.positions[i]))
+            {
+                return false; // Some other ship is here.
+            }
+        }
+    }
+    return true;
+}    
+
 template <int SIZE=GRID_DIM>
-std::vector<Ship> ship_possibile_locations(Type id, const GridInfo& info)
+std::vector<Ship> ship_possibile_locations(CellType id, const GridInfo& info)
 {
     static_assert(SIZE <= GRID_DIM, "Template parameter too large");
     std::vector<Ship> locations;
@@ -137,17 +164,13 @@ std::vector<Ship> ship_possibile_locations(Type id, const GridInfo& info)
         for (int8_t col=0; col < SIZE; ++col)
         {
             auto right = Ship::create(id, Coordinate{row, col}, Direction::RIGHT);
-            if (right.se.col < SIZE // Validity checks start with "still on the board"
-                && (!right.overlaps_any(info.misses))
-                // && right.overlaps_all(info.hits)
-            )
+            if (right.se.col < SIZE && can_place_ship(right, info))
             {
                 locations.push_back(std::move(right));
             }
+
             auto down = Ship::create(id, Coordinate{row, col}, Direction::DOWN);
-            if (down.se.row < SIZE // Validity checks start with "still on the board"
-                && (!down.overlaps_any(info.misses))
-            )
+            if (down.se.row < SIZE && can_place_ship(down, info))
             {
                 locations.push_back(std::move(down));
             }
