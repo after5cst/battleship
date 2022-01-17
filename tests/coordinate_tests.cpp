@@ -41,7 +41,7 @@ TEST(ShipTests, test_ship_detects_parallel_ship_overlap_different_col) {
 
 TEST(ShipTests, test_ship_detects_parallel_ship_overlap_same_col) {
     auto battleship = Ship::create(Type::BATTLESHIP, {2,1}, Direction::DOWN);
-    for (uint8_t i=0; i <10; ++i)
+    for (int8_t i=0; i <10; ++i)
     {
         auto destroyer = Ship::create(Type::DESTROYER, {i,1}, Direction::DOWN);
         if (i < 1 || i >= 6)
@@ -61,7 +61,7 @@ TEST(ShipTests, test_ship_detects_perpendicular_ship_overlap) {
     
     auto ship1 = Ship::create(Type::DESTROYER, {0,2}, Direction::DOWN);
     // Sail W -> E through the staionary ship at coordinate {0,2}
-    for (uint8_t i=0; i <4; ++i)
+    for (int8_t i=0; i <4; ++i)
     {
         auto ship2 = Ship::create(Type::DESTROYER, {0,i}, Direction::RIGHT);
         if (i < 1 || i > 2)
@@ -81,7 +81,7 @@ TEST(ShipTests, test_ship_detects_perpendicular_ship_non_overlap) {
     
     auto ship1 = Ship::create(Type::DESTROYER, {2,2}, Direction::DOWN);
     // Sail E -> W with a second ship N of the stationary ship.
-    for (uint8_t i=0; i <5; ++i)
+    for (int8_t i=0; i <5; ++i)
     {
         auto ship2 = Ship::create(Type::DESTROYER, {0,i}, Direction::RIGHT);
         ASSERT_FALSE(ship1.overlaps(ship2));
@@ -90,7 +90,7 @@ TEST(ShipTests, test_ship_detects_perpendicular_ship_non_overlap) {
     
     // Sail N -> S with a second ship W of the stationary ship.
     auto ship3 = Ship::create(Type::DESTROYER, {2,2}, Direction::RIGHT);
-    for (uint8_t i=0; i <5; ++i)
+    for (int8_t i=0; i <5; ++i)
     {
         auto ship2 = Ship::create(Type::DESTROYER, {i,0}, Direction::DOWN);
         ASSERT_FALSE(ship3.overlaps(ship2));

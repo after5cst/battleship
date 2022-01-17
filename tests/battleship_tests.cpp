@@ -37,7 +37,7 @@ TEST(ConfigTests, testCanResetGame) {
 }
 
 TEST(GridTests, testGridInitializesToNothing) {
-    auto grid = PegBoard::create();
+    auto grid = TypeGrid::create();
     for (auto i = 0U; i < GRID_DIM * GRID_DIM; ++i)
     {
         ASSERT_EQ(grid[i], Type::NOTHING);

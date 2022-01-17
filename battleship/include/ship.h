@@ -26,11 +26,7 @@ struct Ship
     {
         if (direction == Direction::RIGHT)
         {
-            return (
-                (two.row == nw.row) &&
-                (two.col <= se.col) &&
-                (two.col >= nw.col )
-            );
+            return nw <= two && two <= se;
         }
         // direction is DOWN
         return (
@@ -46,11 +42,7 @@ struct Ship
         {
             if (direction == Direction::RIGHT)
             {
-                return (
-                    (two.nw.row == nw.row) &&
-                    (two.nw.col <= se.col) &&
-                    (two.se.col >= nw.col )
-                );
+                return nw <= two.se && two.nw <= se;
             }
             // direction is DOWN
             return (
@@ -77,12 +69,45 @@ struct Ship
             (two.nw.row >= nw.row)
         );
     }
+
+    bool overlaps_any(const Positions &positions)
+    {
+        for (auto& pos : positions)
+        {
+            if (pos == -1)
+            {
+                break;
+            }
+            if (overlaps(Coordinate{pos}))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool overlaps_all(const Positions &positions)
+    {
+        for (auto& pos : positions)
+        {
+            if (pos == -1)
+            {
+                break;
+            }
+            if (!overlaps(Coordinate{pos}))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
 private:
     static Coordinate calculate_se(Coordinate nw, uint8_t length, Direction direction)
     {
         return (direction == Direction::RIGHT)
-            ? Coordinate{ nw.row, static_cast<uint8_t>(nw.col + length - 1) }
-            : Coordinate{ static_cast<uint8_t>(nw.row + length - 1), nw.col }
+            ? Coordinate{ nw.row, static_cast<int8_t>(nw.col + length - 1) }
+            : Coordinate{ static_cast<int8_t>(nw.row + length - 1), nw.col }
             ;
     }
 };
@@ -102,22 +127,27 @@ inline uint8_t calculate_ship_length(Type id)
 }
 
 template <int SIZE=GRID_DIM>
-std::vector<Ship> ship_possibile_locations(Type id/*,TODO: filtering*/)
+std::vector<Ship> ship_possibile_locations(Type id, const GridInfo& info)
 {
     static_assert(SIZE <= GRID_DIM, "Template parameter too large");
     std::vector<Ship> locations;
     locations.reserve(180); // Big enough for all destroyer locations.
-    for (uint8_t row=0; row < SIZE; ++row)
+    for (int8_t row=0; row < SIZE; ++row)
     {
-        for (uint8_t col=0; col < SIZE; ++col)
+        for (int8_t col=0; col < SIZE; ++col)
         {
             auto right = Ship::create(id, Coordinate{row, col}, Direction::RIGHT);
-            if (right.se.col < SIZE) // Validity checks start with "still on the board"
+            if (right.se.col < SIZE // Validity checks start with "still on the board"
+                && (!right.overlaps_any(info.misses))
+                // && right.overlaps_all(info.hits)
+            )
             {
                 locations.push_back(std::move(right));
             }
             auto down = Ship::create(id, Coordinate{row, col}, Direction::DOWN);
-            if (right.se.col < SIZE) // Validity checks start with "still on the board"
+            if (down.se.row < SIZE // Validity checks start with "still on the board"
+                && (!down.overlaps_any(info.misses))
+            )
             {
                 locations.push_back(std::move(down));
             }

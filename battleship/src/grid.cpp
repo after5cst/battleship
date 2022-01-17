@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <fstream>
 
-static void save(const PegBoard& grid, std::string name)
+static void save(const TypeGrid& grid, std::string name)
 {
     auto path = get_config_path() / (name + ".grid");
     auto fp = std::ofstream(path);
@@ -11,14 +11,14 @@ static void save(const PegBoard& grid, std::string name)
     {
         for (uint8_t col = 0; col < GRID_DIM; ++col)
         {
-            auto ch = static_cast<char>(grid[Coordinate{row, col}]);
+            auto ch = static_cast<char>(grid[Coordinate(row, col).pos]);
             fp << (ch ? ch : ' '); // convert '\0' to ' '.
         }
         fp << std::endl;
     }
 }
 
-static PegBoard load(std::string name)
+static TypeGrid load(std::string name)
 {
     auto path = get_config_path() / (name + ".grid");
     std::ifstream file(path, std::ios::binary | std::ios::ate);
@@ -32,7 +32,7 @@ static PegBoard load(std::string name)
     }
 
     auto offset = 0;
-    auto grid = PegBoard{};
+    auto grid = TypeGrid{};
 
     for (const auto& ch: source_buffer)
     {
@@ -49,22 +49,22 @@ static PegBoard load(std::string name)
     return grid;
 }
 
-PegBoard load_aiming_grid()
+TypeGrid load_aiming_grid()
 {
     return load("aiming");
 }
 
-PegBoard load_ship_grid()
+TypeGrid load_ship_grid()
 {
     return load("ship");
 }
 
-void save_aiming_grid(const PegBoard& grid)
+void save_aiming_grid(const TypeGrid& grid)
 {
     save(grid, "aiming");
 }
 
-void save_ship_grid(const PegBoard& grid)
+void save_ship_grid(const TypeGrid& grid)
 {
     save(grid, "ship");
 }
